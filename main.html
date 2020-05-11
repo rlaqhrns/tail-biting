@@ -8,12 +8,15 @@
         border : 1px black solid;
       }
       tr,td{
+        background-Color : red;
         border : 1px black solid;
         width : 70px;
         height : 70px;
         text-align : center;
       }
-      h1{margin:0;}
+      h1{
+        margin:0;
+      }
     </style>
     <script type="text/javascript">
       var x = Number(prompt("몇줄?"));
@@ -23,8 +26,8 @@
       for(var i = 0; i<x ; i++){
         document.write("<tr>")
         for(var j = 0; j<y ; j++){
-          document.write("<td><h1>"+num+"</h1></td>");
-          num++;
+          document.write("<td></td>");
+
         }
         document.write("</tr>")
       }
