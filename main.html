@@ -19,6 +19,7 @@
         margin:0;
       }
     </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -40,25 +41,31 @@
         document.write("</tr>")
       }
       document.write("</table>");
-      $("#box_"+ranNumA+"_"+ranNumB).css("background", "blue");//먹이 랜덤
-      $("#box_"+0+"_"+0).css("background", "blue");
+      $("#box_"+ranNumA+"_"+ranNumB).css("background", "orange");//먹이 랜덤
+      $("#box_"+x+"_"+y).css("background", "blue");
       console.log(ranNumA);
       console.log(ranNumB);
       $(document).keydown(function(event) {
         var key = event.which;
         if(key == 37){ //좌
           y-=1;
+          if(y<0){alert("game over");location.reload()};
         }else if(key == 38){//상
           x-=1;
-
+          if(x<0){alert("game over");location.reload()};
         }else if(key == 39){//우
           y+=1;
-
+          if(y>(column-1)){alert("game over");location.reload()};
         }else if(key == 40){//하
           x+=1;
+          if(x>(row-1)){alert("game over");location.reload()};
         }
         $("#box_"+x+"_"+y).css("background", "blue");
       });
+      $("td[backgroundColor=white]").addClass("way");
+      $("td[backgroundColor=blue]").addClass("snake");
+      $("td[backgroundColor=orange]").addClass("Food");
+      
       // while((0<=x<row) && (0<=y<column)){
 
 
