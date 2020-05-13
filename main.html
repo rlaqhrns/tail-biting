@@ -35,8 +35,8 @@
       var column = Number(prompt("몇칸?"));
       var x = 0;
       var y = 0;
-      var ranNumA = Math.floor(Math.random()*row);
-      var ranNumB = Math.floor(Math.random()*column);
+      // var ranNumA = Math.floor(Math.random()*row);
+      // var ranNumB = Math.floor(Math.random()*column);
       document.write("<table>");/////table
       for(var i = 0; i<row ; i++){
         document.write("<tr>")
@@ -49,12 +49,11 @@
       }
       document.write("</table>");
       $("td").addClass("way");
-      $("#box_"+ranNumA+"_"+ranNumB).addClass("Food");//먹이 랜덤
       $("#box_"+x+"_"+y).addClass("snake");
+      $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");//먹이 랜덤
 
       //$("td:not(.Food,.snake)").addClass("way");// 제외하고 addclass
-      console.log(ranNumA);
-      console.log(ranNumB);
+    
       $(document).keydown(function(event) {
         $("#box_"+x+"_"+y).removeClass("snake");//초기 0,0에서 시작
         var key = event.which;
