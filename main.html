@@ -14,6 +14,9 @@
         height : 70px;
         text-align : center;
       }
+      .way{
+        background-color : green;
+      }
       .Food{
         background-color : orange;
       }
@@ -45,12 +48,15 @@
         document.write("</tr>")
       }
       document.write("</table>");
+      $("td").addClass("way");
       $("#box_"+ranNumA+"_"+ranNumB).addClass("Food");//먹이 랜덤
       $("#box_"+x+"_"+y).addClass("snake");
+
+      //$("td:not(.Food,.snake)").addClass("way");// 제외하고 addclass
       console.log(ranNumA);
       console.log(ranNumB);
       $(document).keydown(function(event) {
-        $("#box_"+x+"_"+y).removeClass("snake");
+        $("#box_"+x+"_"+y).removeClass("snake");//초기 0,0에서 시작
         var key = event.which;
         if(key == 37){ //좌
           y-=1;
@@ -66,9 +72,12 @@
           if(x>(row-1)){alert("game over");location.reload()};
         }
         $("#box_"+x+"_"+y).addClass("snake");
-        if(x==ranNumA && y==ranNumB){
-          alert("먹이를 먹음");
+
+        if($(".snake").attr('id')===$(".Food").attr('id')){
+          $("td").removeClass("Food");
+          $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");
         }
+
       });
 
 
