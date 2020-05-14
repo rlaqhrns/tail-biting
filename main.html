@@ -42,6 +42,7 @@
       var moveX = new Array();
       var moveY = new Array();
       var snake = new Array();
+      var foodarea = new Array();
       var bodySize = 1;
       var move = 0;
       // var ranNumA = function(){return Math.floor(Math.random());};
@@ -62,17 +63,23 @@
       document.write("</table>");
 
       function decideFoodArea(){//음식 생성
+
         // ranNumA = Math.floor(Math.random()*row);
         // ranNumB = Math.floor(Math.random()*column);
         // var $foodarea = $("#box" + ranNumA +"_"+ ranNumB);
 
-        var $foodmap = $( ".way:not(.head,.body)" );
-        var randomIdx = Math.floor(Math.random() * $foodmap.length );
-        var $foodarea = $foodmap.eq(randomIdx);
-        $foodarea.addClass("Food");//먹이 랜덤
+        // var $foodmap = $( ".way:not(.head,.body)" );
+        // var randomIdx = Math.floor(Math.random() * $foodmap.length );
+        // var $foodarea = $foodmap.eq(randomIdx);
+        // $foodarea.addClass("Food");//먹이 랜덤
+        foodarea = map.filter(x => !snake.includes(x));
+        var randomIdx = Math.floor(Math.random() * foodarea.length );
+        $("#box"+foodarea[randomIdx]).addClass("Food");
+      
+
         for(var i=0; i<map.length; i++){
         //  console.log(map[i])
-          var maps = map[i].split('_')
+          var maps = map[i].split('_');
           //console.log('y = ' + maps[0] + ', x = ' + maps[1])
 
          }
@@ -99,7 +106,7 @@
             }else{
               $box.addClass('body');
             }
-            snake[i]="#box"+moveX[i]+"_"+moveY[i];
+            snake[i]=moveX[i]+"_"+moveY[i];
 
           }
           console.log(snake);
@@ -115,18 +122,22 @@
         var key = event.which;
         if(key == 37){ //좌
           heady-=1;
+          move++;
           if(heady<0){alert("game over");location.reload()};
         }else if(key == 38){//상
           headx-=1;
+          move++;
           if(headx<0){alert("game over");location.reload()};
         }else if(key == 39){//우
           heady+=1;
+          move++;
           if(heady>(column-1)){alert("game over");location.reload()};
         }else if(key == 40){//하
           headx+=1;
+          move++;
           if(headx>(row-1)){alert("game over");location.reload()};
         }
-        move++;//움직임 저장
+      //움직임 저장
 
         moveX.unshift(headx);
         moveY.unshift(heady);
