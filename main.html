@@ -15,7 +15,7 @@
         text-align : center;
       }
       .way{
-        background-color : green;
+        /* background-color : green; */
       }
       .Food{
         background-color : orange;
@@ -23,6 +23,9 @@
       .snake{
         background-color : blue;
         margin:0;
+      }
+      .body{
+        background-color : skyblue;
       }
 
     </style>
@@ -33,51 +36,105 @@
     <script type="text/javascript">
       var row = Number(prompt("몇줄?"));
       var column = Number(prompt("몇칸?"));
-      var x = 0;
-      var y = 0;
-      // var ranNumA = Math.floor(Math.random()*row);
+      var headx = 0;
+      var heady = 0;
+      var bodyX = new Array();
+      var bodyY = new Array();
+      var bodySize = 1;
+      var move = 0;
+      // var ranNumA = function(){return Math.floor(Math.random());};
       // var ranNumB = Math.floor(Math.random()*column);
+      var mapsize = column*row;
       document.write("<table>");/////table
       for(var i = 0; i<row ; i++){
         document.write("<tr>")
         for(var j = 0; j<column ; j++){
           var roadaddress = i+","+j;
-          document.write(`<td id = "box_`+i+`_`+j+`">`+roadaddress+"</td>");
+          document.write(`<td id = "box`+i+`_`+j+`">`+roadaddress+"</td>");
 
         }
         document.write("</tr>")
       }
       document.write("</table>");
+
+      function decideFoodArea(){//음식 생성
+        var $foodmap = $( ".way:not(.snake,.body)" );
+        var randomIdx = Math.floor(Math.random() * $foodmap.length );
+        var $foodarea = $foodmap.eq(randomIdx);
+        $foodarea.addClass("Food");//먹이 랜덤
+      }
+      function removesnake(){//뱀 초기화
+        for( var i = 0 ; i < row ; i++){
+            for( var j = 0 ; j < column ; j++) {
+                var $box = $("#box" + i +"_"+ j);
+                $box.removeClass("snake");
+                $box.removeClass("body");
+            }
+        }
+      }
+      function newsnake(){//뱀 생성
+        for(var i = 0 ; i < bodySize ; i++){
+          var $box = $('#box' + bodyX[move-i-1] +'_' + bodyY[move-i-1]);
+            if(i === 0){
+              $box.addClass('snake');
+
+
+            }else{
+              $box.addClass('body');
+            }
+          }
+        }
       $("td").addClass("way");
-      $("#box_"+x+"_"+y).addClass("snake");
-      $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");//먹이 랜덤
+      $("#box"+headx+"_"+heady).addClass("snake");
+      decideFoodArea();
 
       //$("td:not(.Food,.snake)").addClass("way");// 제외하고 addclass
-    
+
       $(document).keydown(function(event) {
-        $("#box_"+x+"_"+y).removeClass("snake");//초기 0,0에서 시작
+        removesnake();//뱀 리셋
         var key = event.which;
         if(key == 37){ //좌
-          y-=1;
-          if(y<0){alert("game over");location.reload()};
+          heady-=1;
+          if(heady<0){alert("game over");location.reload()};
         }else if(key == 38){//상
-          x-=1;
-          if(x<0){alert("game over");location.reload()};
+          headx-=1;
+          if(headx<0){alert("game over");location.reload()};
         }else if(key == 39){//우
-          y+=1;
-          if(y>(column-1)){alert("game over");location.reload()};
+          heady+=1;
+          if(heady>(column-1)){alert("game over");location.reload()};
         }else if(key == 40){//하
-          x+=1;
-          if(x>(row-1)){alert("game over");location.reload()};
+          headx+=1;
+          if(headx>(row-1)){alert("game over");location.reload()};
         }
-        $("#box_"+x+"_"+y).addClass("snake");
+        move++;//움직임 저장
+        console.log("headX="+headx);
+        console.log("headY="+heady);
+        bodyX.push(headx);
+        bodyY.push(heady);
+        console.log(bodyX);
+        console.log(bodyY);
+        newsnake();
 
         if($(".snake").attr('id')===$(".Food").attr('id')){
           $("td").removeClass("Food");
-          $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");
+          bodySize++;
+          decideFoodArea();
         }
-
       });
+
+
+
+        //
+        // 1. x, y의 위치를 snake로 써.
+        // 2. snake의 위치와 food의 위치가 같으면. => 먹었다!
+        // (비교하는 주체? -> jquery dom, html )
+        //
+        // 1. x, y의 위치를 알고있고.(몸통의 위치도 물론 알아야 하고)
+        // 2. 음식의 위치도 알고 있어야하고,
+        // 3. 음식의 위치와 x,y가 같으면 먹었다!
+        // 비교하는주체가 변수
+
+
 
 
 
