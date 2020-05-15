@@ -39,8 +39,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-      var row = Number(prompt("몇줄?"));
-      var column = Number(prompt("몇칸?"));
+      var row = Number(prompt("몇줄?","5"));
+      var column = Number(prompt("몇칸?","5"));
       var headx = 0;
       var heady = 0;
       var map = new Array();
@@ -54,6 +54,7 @@
       // var ranNumA = function(){return Math.floor(Math.random());};
       // var ranNumB = Math.floor(Math.random()*column);
       var mapsize = column*row;
+      if(mapsize === 0){alert("값을 입력해주세요");location.reload();}
       document.write("<table>");/////table
       for(var i = 0; i<row ; i++){
         document.write("<tr>")
@@ -99,7 +100,7 @@
         foodarea = map.filter(x => !snake.includes(x));
         randomIdx = Math.floor(Math.random() * foodarea.length );
         $("#box"+foodarea[randomIdx]).addClass("Food");
-        if(foodarea.length === 0){alert("succese");reset();}
+        if(foodarea.length === 0){alert("succese");location.reload();}
 
 
         //for(var i=0; i<map.length; i++){
