@@ -7,9 +7,14 @@
       table{
         border : 1px black solid;
       }
-      tr,td{
+      tr{
 
         border : 1px black solid;
+      }
+
+      td{
+        padding : 0;
+        margin : 0;
         width : 70px;
         height : 70px;
         text-align : center;
@@ -53,8 +58,7 @@
       for(var i = 0; i<row ; i++){
         document.write("<tr>")
         for(var j = 0; j<column ; j++){
-          var roadaddress = i+","+j;
-          document.write(`<td id = "box`+i+`_`+j+`">`+roadaddress+"</td>");
+          document.write(`<td id = "box`+i+`_`+j+`">`+"</td>");
           map.push(i+"_"+j);
         }
 
