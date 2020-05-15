@@ -43,6 +43,7 @@
       var moveY = new Array();
       var snake = new Array();
       var foodarea = new Array();
+    //  var tail = new Array();
       var bodySize = 1;
       var move = 0;
       // var ranNumA = function(){return Math.floor(Math.random());};
@@ -61,6 +62,23 @@
       }
     //  console.log(document.getElementById("box"+map[5]));//******id+map array*****
       document.write("</table>");
+      function reset(){
+        headx = 0;
+        heady = 0;
+        moveX = [];
+        moveY = [];
+        snake = [];
+        foodarea = [];
+        //tail = [];
+        bodySize = 1;
+        move = 0;
+        $("td").removeClass("body");
+        $("td").removeClass("head")
+        $("td").addClass("way");
+        $("#box"+headx+"_"+heady).addClass("head");
+        drowsnake();
+        decideFoodArea();
+      }
 
       function decideFoodArea(){//음식 생성
 
@@ -72,17 +90,18 @@
         // var randomIdx = Math.floor(Math.random() * $foodmap.length );
         // var $foodarea = $foodmap.eq(randomIdx);
         // $foodarea.addClass("Food");//먹이 랜덤
+        $("td").removeClass("Food");
         foodarea = map.filter(x => !snake.includes(x));
-        var randomIdx = Math.floor(Math.random() * foodarea.length );
+        randomIdx = Math.floor(Math.random() * foodarea.length );
         $("#box"+foodarea[randomIdx]).addClass("Food");
-      
 
-        for(var i=0; i<map.length; i++){
+
+        //for(var i=0; i<map.length; i++){
         //  console.log(map[i])
-          var maps = map[i].split('_');
+        //  var maps = map[i].split('_');
           //console.log('y = ' + maps[0] + ', x = ' + maps[1])
 
-         }
+        // }
         }
 
 
@@ -105,15 +124,14 @@
 
             }else{
               $box.addClass('body');
+//            tail[i-1]=moveX[i]+"_"+moveY[i];
             }
             snake[i]=moveX[i]+"_"+moveY[i];
 
           }
-          console.log(snake);
+
         }
-      $("td").addClass("way");
-      $("#box"+headx+"_"+heady).addClass("head");
-      decideFoodArea();
+      reset();
 
       //$("td:not(.Food,.head)").addClass("way");// 제외하고 addclass
 
@@ -123,19 +141,19 @@
         if(key == 37){ //좌
           heady-=1;
           move++;
-          if(heady<0){alert("game over");location.reload()};
+          if(heady<0){alert("game over");reset();};
         }else if(key == 38){//상
           headx-=1;
           move++;
-          if(headx<0){alert("game over");location.reload()};
+          if(headx<0){alert("game over");reset();};
         }else if(key == 39){//우
           heady+=1;
           move++;
-          if(heady>(column-1)){alert("game over");location.reload()};
+          if(heady>(column-1)){alert("game over");reset();};
         }else if(key == 40){//하
           headx+=1;
           move++;
-          if(headx>(row-1)){alert("game over");location.reload()};
+          if(headx>(row-1)){alert("game over");reset();};
         }
       //움직임 저장
 
@@ -143,15 +161,19 @@
         moveY.unshift(heady);
         // console.log("ranNumA="+ranNumA);
         // console.log("ranNumB="+ranNumB);
-        console.log("moveX="+moveX);
-        console.log("moveY="+moveY);
+        // console.log("moveX="+moveX);
+        // console.log("moveY="+moveY);
 
         drowsnake();
         //  if(headx === ????? && heady === ?????){
-        if($(".head").attr('id')===$(".Food").attr('id')){
-          $("td").removeClass("Food");
+        if(snake[0]===foodarea[randomIdx]){
+          console.log(snake[0]);
+          console.log(foodarea[randomIdx]);
+
           bodySize++;
           decideFoodArea();
+        }else if(snake.slice(1).includes(snake[0])===true){
+          alert("game over");reset();
         }
 
 
