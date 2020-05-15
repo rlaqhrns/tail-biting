@@ -72,8 +72,9 @@
         //tail = [];
         bodySize = 1;
         move = 0;
-        $("td").removeClass("body");
-        $("td").removeClass("head")
+        moveX.unshift(headx);
+        moveY.unshift(heady);
+        clearsnake();
         $("td").addClass("way");
         $("#box"+headx+"_"+heady).addClass("head");
         drowsnake();
@@ -94,6 +95,7 @@
         foodarea = map.filter(x => !snake.includes(x));
         randomIdx = Math.floor(Math.random() * foodarea.length );
         $("#box"+foodarea[randomIdx]).addClass("Food");
+        if(foodarea.length === 0){alert("succese")}
 
 
         //for(var i=0; i<map.length; i++){
@@ -167,9 +169,6 @@
         drowsnake();
         //  if(headx === ????? && heady === ?????){
         if(snake[0]===foodarea[randomIdx]){
-          console.log(snake[0]);
-          console.log(foodarea[randomIdx]);
-
           bodySize++;
           decideFoodArea();
         }else if(snake.slice(1).includes(snake[0])===true){
