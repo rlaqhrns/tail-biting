@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>보군아 공부해라</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+
+      table {
+        border-spacing: 0px;
+        border: 1px solid #444444;
+      }
+
+      th, td {
+        width: 30px;
+        height: 30px;
+      }
+
+      .tail{
+        background-color: pink;
+      }
+
+      .head{
+        background-color: brown;
+      }
+
+      .apple{
+        background-color: green;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <table >
+      <tbody id="snake">
+      </tbody>
+    </table>
+  </body>
+  <script>
+    var UP=38;
+    var DOWN=40;
+    var LEFT=37;
+    var RIGHT=39;
+
+    var SIZE = 3;
+    var SNAKE = null;
+    var APPLE = null;
+    var DIR = null;
+    var TIMER = null;
+    var INTERVAL = null;
+
+
+    function createTR(id){
+      var tr  = document.createElement('tr');
+      tr.id = id
+      return tr;
+    }
+
+    function createTD(id){
+      var td  = document.createElement('td');
+      td.id = id;
+      return td;
+    }
+
+    function getTRid(y){
+      return 'tr-' + y;
+    }
+
+    function getTDid(y,x){
+      return 'td-' + y + '-' + x;
+    }
+
+    function getElement(y, x){
+      return $('#' + getTDid(y,x));
+    }
+
+    class Snake{
+      constructor(y,x) {
+          this.y = y;
+          this.x = x;
+          this.oldY = null;
+          this.oldX = null;
+          this.next = null;
+          this.last = null;
+      }
+
+      hasNext(){
+        return this.next != null;
+      }
+
+      draw(){
+        var el = getElement(this.y, this.x)
+        el.addClass('head');
+
+        if(this.hasNext()){
+          this.next.draw();
+        }
+      }
+
+      move(dir){
+        this.oldX = this.x;
+        this.oldY = this.y;
+
+        switch (dir) {
+          case UP:
+            this.y--;
+            break;
+          case DOWN:
+            this.y++;
+            break;
+          case LEFT:
+            this.x--;
+            break;
+          case RIGHT:
+            this.x++;
+            break;
+        }
+
+        if(this.hasNext()){
+          this.next.set(this.oldY, this.oldX);
+        }
+      }
+
+      isDead(size){
+        if(this.y < 0 || this.y >= SIZE
+          || this.x < 0 || this.x >=SIZE){
+          return true;
+        }
+
+        if(this.hasNext()){
+          return this.next.isCrash(this.y, this.x)
+        }
+
+        return false;
+      }
+
+      grow(){
+        if(this.next == null){
+          this.next = this.last = new Tail(this.oldY, this.oldX);
+        }
+        else{
+          this.last = this.last.createNext();
+        }
+      }
+    }
+
+
+    class Tail{
+      constructor(y, x) {
+          this.y = y;
+          this.x = x;
+          this.oldY = null;
+          this.oldX = null;
+          this.next = null;
+      }
+
+      draw(){
+        var el = getElement(this.y, this.x)
+        el.addClass('tail');
+
+        if(this.hasNext()){
+          this.next.draw();
+        }
+      }
+
+      hasNext(){
+        return this.next != null;
+      }
+
+      set(y, x){
+        this.oldX = this.x;
+        this.oldY = this.y;
+
+        this.y = y;
+        this.x = x;
+
+        if(this.hasNext()){
+          this.next.set(this.oldY, this.oldX);
+        }
+      }
+
+      isCrash(y, x){
+        if(this.y == y && this.x == x){
+          return true;
+        }
+
+        if(this.hasNext()){
+          return this.next.isCrash(y,x);
+        }
+
+        return false;
+      }
+
+      createNext(){
+        this.next = new Tail(this.oldY, this.oldX);
+        return this.next;
+      }
+    }
+
+    class Apple{
+      constructor(y,x) {
+          this.y = y;
+          this.x = x;
+      }
+
+      draw(){
+        var el = getElement(this.y, this.x)
+        el.addClass('apple');
+      }
+    }
+
+
+    function newApple(){
+      var arr = []
+      for(var y=0; y<SIZE; y++){
+        arr.push([])
+        for(var x=0; x<SIZE; x++){
+          arr[y].push(0);
+        }
+      }
+
+      var body = SNAKE;
+      while(body != null){
+        arr[body.y][body.x] = 1;
+        body = body.next;
+      }
+
+      var targets = [];
+      for(var y=0; y<SIZE; y++){
+        for(var x=0; x<SIZE; x++){
+          if(arr[y][x] == 0){
+            targets.push([y,x])
+          }
+        }
+      }
+
+      if(targets.length == 0){
+        return null;
+      }
+
+      var rand = Math.floor(Math.random() * targets.length);
+
+      return new Apple(targets[rand][0], targets[rand][1]);
+    }
+
+    function refresh(){
+      for(var y=0; y<SIZE ; y++){
+        for(var x=0; x<SIZE; x++){
+          var tr = getElement(y,x);
+          tr.removeClass();
+        }
+      }
+
+      SNAKE.draw();
+      APPLE.draw();
+    }
+
+    function move(dir){
+      SNAKE.move(dir);
+
+      if(SNAKE.y == APPLE.y && SNAKE.x == APPLE.x){
+        SNAKE.grow();
+        APPLE = newApple();
+        INTERVAL = INTERVAL * 0.9;
+      }
+
+      if(SNAKE.isDead(SIZE)){
+        window.alert('DEAD!!!');
+        reset();
+        return false;
+      }
+
+      if(APPLE == null){
+        window.alert('CLEAR!!!');
+        reset();
+        return false;
+      }
+      refresh();
+      return true;
+    }
+
+    function keyDown(event){
+      console.log('keydown::' + event.which)
+      switch(event.which){
+        case UP:
+          if(DIR == DOWN){
+            return;
+          }
+          break;
+        case DOWN:
+          if(DIR == UP){
+            return;
+          }
+          break;
+        case LEFT:
+          if(DIR == RIGHT){
+            return;
+          }
+          break;
+        case RIGHT:
+          if(DIR == LEFT){
+            return;
+          }
+          break;
+        default:
+          return;
+      }
+
+
+      DIR = event.which;
+      clearTimeout(TIMER)
+      var running = move(DIR);
+      if(running){
+        INTERVAL = INTERVAL * 0.999;
+        TIMER = setTimeout(timer,INTERVAL);
+      }
+    }
+
+    function timer(){
+      var running = move(DIR);
+      if(running){
+        INTERVAL = INTERVAL * 0.999;
+        TIMER = setTimeout(timer,INTERVAL);
+      }
+    }
+
+    function reset(){
+
+      SNAKE = new Snake(0,0);
+      DIR = RIGHT;
+      APPLE = newApple();
+      INTERVAL = 1000;
+      if(TIMER != null){
+        clearTimeout(TIMER)
+      }
+      TIMER = setTimeout(timer,INTERVAL);
+
+      refresh()
+    }
+
+    function init(){
+      var input = prompt('size(number)', '10');
+      if(!isNaN(input)){
+        SIZE = Number(input);
+      }
+
+      var table = $('#snake')
+      for(var y=0; y<SIZE ; y++){
+        var tr = createTR(getTRid(y));
+        table.append(tr);
+
+        for(var x=0; x<SIZE; x++){
+          tr.append(createTD(getTDid(y,x)))
+        }
+      }
+      $(document).keydown(keyDown);
+      reset();
+    }
+
+    $(document).ready(init)
+  </script>
+</html>
