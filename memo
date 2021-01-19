@@ -1,0 +1,36 @@
+$(document).keydown(function(event) {
+  $("#box_"+x+"_"+y).removeClass("snake");//초기 0,0에서 시작
+  var key = event.which;
+  if(key == 37){ //좌
+    y-=1;
+    $("#box_"+x+"_"+y).addClass("snake");
+    if(y<0){alert("game over");location.reload()}
+    else if($(".snake").attr('id')===$(".Food").attr('id')){
+      $("td").removeClass("Food");
+      $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");
+    }
+  }else if(key == 38){//상
+    x-=1;
+    $("#box_"+x+"_"+y).addClass("snake");
+    if(x<0){alert("game over");location.reload()}
+    else if($(".snake").attr('id')===$(".Food").attr('id')){
+      $("td").removeClass("Food");
+      $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");
+    }
+  }else if(key == 39){//우
+    y+=1;
+    $("#box_"+x+"_"+y).addClass("snake");
+    if(y>(column-1)){alert("game over");location.reload()}
+    else if($(".snake").attr('id')===$(".Food").attr('id')){
+      $("td").removeClass("Food");
+      $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");
+    }
+  }else if(key == 40){//하
+    x+=1;
+    $("#box_"+x+"_"+y).addClass("snake");
+    if(x>(row-1)){alert("game over");location.reload()}
+    else if($(".snake").attr('id')===$(".Food").attr('id')){
+      $("td").removeClass("Food");
+      $( ".way:not(.snake)" ).eq(Math.floor(Math.random()*column*row-$('.snake').length)).addClass("Food");
+    }
+  }
